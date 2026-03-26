@@ -11,9 +11,10 @@ import seaborn as sns
 df = pd.read_csv('premier_league_matches.csv')
 
 # first look
-print(df.shape)           # how many rows and columns?
-print(df.head())          # what does it actually look like?
-print(df.dtypes)          # what type is each column?
+print(df.shape)
+print(df.head())          
+print(df.dtypes)          
+
 # decode FTR into readable labels first
 df['result'] = df['FTR'].map({'H': 'Home Win', 'A': 'Away Win', 'D': 'Draw'})
 
