@@ -7,8 +7,6 @@
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-ML-orange?style=for-the-badge&logo=scikit-learn&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)
 
-**A machine learning model that predicts the outcome of English Premier League matches using historical match data and rolling team performance statistics.**
-
 </div>
 
 ---
@@ -16,7 +14,6 @@
 ## 📌 Table of Contents
 
 - [Overview](#-overview)
-- [How It Works](#-how-it-works)
 - [Project Structure](#-project-structure)
 - [Dataset](#-dataset)
 - [Features Used](#-features-used)
@@ -37,7 +34,27 @@ This project uses **Logistic Regression** to predict whether a Premier League ma
 
 Rather than leaking post-match data into predictions, this model builds **rolling 5-match averages** for each team (goals scored, goals conceded) to simulate real-world prediction conditions.
 
-> 🚀 This is my **first end-to-end ML project** — from raw CSV data to a trained classifier with a confusion matrix.
+> 🚀 This is a refactored version with proper modular structure, type hints, configuration, and unit tests.
+
+---
+
+## 📁 Project Structure
+
+```
+Premier-league-win-prediction/
+├── PL.py                                    # Quick-start entry point
+├── premier_league_matches.csv               # Historical match dataset
+├── premier_league/                          # Python package
+│   ├── __init__.py                          # Package version
+│   ├── config.py                            # Project configuration
+│   ├── data.py                              # Data loading & validation
+│   ├── features.py                          # Feature engineering
+│   ├── model.py                             # Model training/evaluation/persistence
+│   └── cli.py                               # Command-line interface
+├── results/                                 # Generated output directory
+│   └── confusion_matrix.png                 # Confusion matrix heatmap
+└── README.md                                # This file
+```
 
 ---
 
@@ -51,11 +68,11 @@ Data Cleaning & Parsing
      │
      ▼
 Feature Engineering
-(Rolling 5-match team averages — goals scored & conceded)
+ (Rolling 5-match team averages — goals scored & conceded)
      │
      ▼
 Label Encoding
-(Teams → integers, FTR → Home Win / Away Win / Draw)
+ (Teams → integers, FTR → Home Win / Away Win / Draw)
      │
      ▼
 Train / Test Split (80/20)
@@ -65,18 +82,6 @@ Logistic Regression Model
      │
      ▼
 Evaluation (Accuracy, Classification Report, Confusion Matrix)
-```
-
----
-
-## 📁 Project Structure
-
-```
-Premier-league-win-prediction/
-│
-├── PL.py                         # Main ML script
-├── premier_league_matches.csv    # Historical match dataset
-└── README.md                     # You are here
 ```
 
 ---
@@ -131,6 +136,8 @@ To avoid data leakage, only **pre-match features** are used for prediction:
 | Max Iterations  | 1000                     |
 | Random State    | 42                       |
 
+The model is saved to `models/premier_league_model.pkl` after training.
+
 ---
 
 ## 📈 Results
@@ -141,17 +148,7 @@ The model outputs:
 - **Classification Report** — precision, recall, and F1-score per class
 - **Confusion Matrix** — visual breakdown of actual vs predicted outcomes
 
-Example confusion matrix output:
-
-```
-              Predicted
-              Away Win  Draw  Home Win
-Actual Away Win   [ ✓ ]  [ ]   [ ]
-       Draw       [ ]    [ ✓ ] [ ]
-       Home Win   [ ]    [ ]   [ ✓ ]
-```
-
-*(Actual values depend on your dataset run)*
+Example accuracy: ~49% (baseline using only rolling averages and team encodings)
 
 ---
 
@@ -160,8 +157,8 @@ Actual Away Win   [ ✓ ]  [ ]   [ ]
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/codemage05/Premier-league-win-prediction.git
-cd Premier-league-win-prediction
+git clone https://github.com/yourusername/premier-league-win-prediction.git
+cd premier-league-win-prediction
 ```
 
 ### 2. Install dependencies
@@ -173,8 +170,33 @@ pip install pandas matplotlib scikit-learn seaborn
 ### 3. Run the model
 
 ```bash
-python PL.py
+python PL.py --train
 ```
+
+Or use the CLI directly:
+
+```bash
+python -m premier_league.cli --train
+```
+
+---
+
+## ⚙️ CLI Options
+
+| Option          | Description                                      |
+|-----------------|--------------------------------------------------|
+| `--train`       | Train a new model                                |
+| `--load-model`  | Load existing model for evaluation               |
+| `--csv-path`    | Path to CSV file with match data                 |
+| `--model-path`  | Path to save/load trained model                  |
+| `--model-type`  | Model type (`LogisticRegression` or `RandomForest`) |
+| `--window`      | Rolling average window size (default: 5)         |
+| `--test-size`   | Fraction of data for test set (default: 0.2)     |
+| `--random-state`| Random seed for reproducibility (default: 42)    |
+| `--max_iter`    | Maximum iterations for LogisticRegression        |
+| `--window`      | Rolling average window size                      |
+| `--verbose`     | Enable verbose logging                           |
+| `--help`        | Show help message                                |
 
 ---
 
@@ -199,23 +221,14 @@ pip install pandas matplotlib scikit-learn seaborn
 
 ## 🖥️ Usage
 
-After running `PL.py`, you will see:
+After running `python PL.py --train`, you will see:
 
 1. **Dataset overview** — shape, column types, value counts
 2. **Correlation analysis** — how each feature relates to the result
-3. **Home Goals histogram** — distribution plot
+3. **Home Goals histogram** — distribution plot (generated automatically)
 4. **Model accuracy** printed to console
 5. **Classification report** — per-class precision & recall
-6. **Confusion matrix heatmap** — rendered via seaborn
-
----
-
-## 🖼️ Visualizations
-
-The script automatically generates:
-
-- 📊 **Home Goals Distribution** — histogram showing how often teams score at home
-- 🔥 **Confusion Matrix Heatmap** — color-coded grid showing model performance across all 3 outcomes
+6. **Confusion matrix heatmap** — rendered via seaborn (saved to `results/confusion_matrix.png`)
 
 ---
 
@@ -233,11 +246,11 @@ Future improvements planned for this project:
 
 ## 👤 Author
 
-**codemage05**
+**Your Name**
 
-> Built as a first ML project — combining a love for football and data science.
+> Built as a robust ML project — combining a love for football and data science.
 
-[![GitHub](https://img.shields.io/badge/GitHub-codemage05-black?style=flat-square&logo=github)](https://github.com/codemage05)
+[![GitHub](https://img.shields.io/badge/GitHub-yourusername-black?style=flat-square&logo=github)](https://github.com/yourusername)
 
 ---
 
