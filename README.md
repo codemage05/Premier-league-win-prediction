@@ -246,7 +246,7 @@ Future improvements planned for this project:
 
 ## 👤 Author
 
-**Your Name**
+**Riyaz**
 
 > Built as a robust ML project — combining a love for football and data science.
 
